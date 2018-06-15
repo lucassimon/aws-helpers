@@ -17,6 +17,7 @@ from setuptools import find_packages, setup, Command
 _version_re = re.compile(r'__version__\s+=\s+(.*)')
 _version_file = os.path.join(
         os.path.abspath(os.path.dirname(__file__)),
+        "aws_helpers",
         "version.py")
 with open(_version_file, 'rb') as f:
     version = str(ast.literal_eval(_version_re.search(
