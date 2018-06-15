@@ -62,7 +62,16 @@ def upload_directory(local_directory='', target_directory='', ignore_dirs=[], bu
     return
 
 
+def get_s3_files(bucket_name=None, bucket_region=None, delimiter='', prefix=''):
+    return get_bucket(bucket_name, bucket_region).objects.filter(Delimiter=delimiter, Prefix=prefix)
+
+
 def delete_s3_files(bucket_name=None, bucket_region=None, delimiter='', prefix=''):
-    for s3_file in get_bucket(bucket_name, bucket_region).objects.filter(Delimiter=delimiter, Prefix=prefix):
+    for s3_file in get_s3_files(bucket_name, bucket_region, delimiter, prefix):
         print('Deleting {}'.format(s3_file.key))
         s3_file.delete()
+
+
+def set_s3_acl(acl='', bucket_name=None, bucket_region=None, delimiter='', prefix=''):
+    for s3_file in get_s3_files(bucket_name, bucket_region, delimiter, prefix):
+        s3_file.Acl().put(ACL='public-read')
