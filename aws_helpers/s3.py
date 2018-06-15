@@ -31,7 +31,7 @@ def get_bucket(bucket_name=None, bucket_region=None):
     return get_s3_session(region_name=bucket_region).Bucket(bucket_name)
 
 
-def upload_directory(local_directory='', target_directory='', ignore_dirs=[], bucket_name='', bucket_region=''):
+def upload_directory(local_directory='', target_directory='', ignore_dirs=[], bucket_name='', bucket_region='', content_type='', content_disposition='', acl=''):
     """Upload all files in *local_directory* to *target_directory* on bucket.
     
     Keyword Arguments:
@@ -58,7 +58,7 @@ def upload_directory(local_directory='', target_directory='', ignore_dirs=[], bu
 
             # Upload a new file
             with open(local_path, 'rb') as data:
-                get_bucket(bucket_name, bucket_region).put_object(Key=s3_path, Body=data)
+                get_bucket(bucket_name, bucket_region).put_object(Key=s3_path, Body=data, ContentType=content_type, ContentDisposition=content_disposition, ACL=acl)
     return
 
 
