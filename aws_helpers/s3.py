@@ -31,6 +31,15 @@ def get_bucket(bucket_name=None, bucket_region=None):
     return get_s3_session(region_name=bucket_region).Bucket(bucket_name)
 
 
+def upload_file(local_file='', target_file='', bucket_name='', bucket_region='', content_type='', content_disposition='', acl='', mock=False):
+            print ('Uploading "{}" to "{}"'.format(local_file, target_file))
+            if not mock:
+                # Upload a new file
+                with open(local_file, 'rb') as data:
+                   get_bucket(bucket_name, bucket_region).put_object(Key=s3_path, Body=data, ContentType=content_type, ContentDisposition=content_disposition, ACL=acl)
+            return
+
+
 def upload_directory(local_directory='', target_directory='', ignore_dirs=[], bucket_name='', bucket_region='', content_type='', content_disposition='', acl=''):
     """Upload all files in *local_directory* to *target_directory* on bucket.
     
@@ -49,6 +58,7 @@ def upload_directory(local_directory='', target_directory='', ignore_dirs=[], bu
             ignore = False
             for ig in ignore_dirs:
                 if relative_path.startswith(ig):
+                    print('Ignoring: {}'.format(relative_path))
                     ignore = True
             if ignore:
                 continue
@@ -57,8 +67,7 @@ def upload_directory(local_directory='', target_directory='', ignore_dirs=[], bu
             print ('Uploading "{}" to "{}"'.format(relative_path, s3_path))
 
             # Upload a new file
-            with open(local_path, 'rb') as data:
-                get_bucket(bucket_name, bucket_region).put_object(Key=s3_path, Body=data, ContentType=content_type, ContentDisposition=content_disposition, ACL=acl)
+            upload_file(relative_path, s3_path, bucket_name, content_type, content_disposition, acl) 
     return
 
 
@@ -66,10 +75,18 @@ def get_s3_files(bucket_name=None, bucket_region=None, delimiter='', prefix=''):
     return get_bucket(bucket_name, bucket_region).objects.filter(Delimiter=delimiter, Prefix=prefix)
 
 
-def delete_s3_files(bucket_name=None, bucket_region=None, delimiter='', prefix=''):
+def delete_s3_file(bucket_name=None, bucket_region=None, delimiter='', prefix=''):
+    s3_file = get_s3_files(bucket_name, bucket_region, delimeter, prefix)
+    print('Deleting {}'.format(s3_file.key))
+    s3_file.delete()
+
+    
+
+def delete_s3_files(bucket_name=None, bucket_region=None, delimiter='', prefix='', mock=False):
     for s3_file in get_s3_files(bucket_name, bucket_region, delimiter, prefix):
         print('Deleting {}'.format(s3_file.key))
-        s3_file.delete()
+        if not mock:
+            s3_file.delete()
 
 
 def set_s3_acl(acl='', bucket_name=None, bucket_region=None, delimiter='', prefix=''):
