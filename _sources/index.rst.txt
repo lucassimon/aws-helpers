@@ -1,20 +1,20 @@
-python-docs
-=============
+aws-helpers
+===========
 |license| |contributors|
 
-.. |license| image:: https://img.shields.io/github/license/ps-george/python-docs.svg
+.. |license| image:: https://img.shields.io/github/license/ps-george/aws-helpers.svg
   :alt: license
-  :target: https://github.com/ps-george/python-docs/blob/master/LICENSE
+  :target: https://github.com/ps-george/aws-helpers/blob/master/LICENSE
 
-.. |contributors| image:: https://img.shields.io/github/contributors/ps-george/python-docs.svg
+.. |contributors| image:: https://img.shields.io/github/contributors/ps-george/aws-helpers.svg
   :alt: GitHub contributors
-  :target: https://github.com/ps-george/python-docs/graphs/contributors
+  :target: https://github.com/ps-george/aws-helpers/graphs/contributors
 
 
 - `project docs`_
 
-.. _`project docs`: https://ps-george.github.io/python-docs
-.. _`project source code`: https://github.com/ps-george/python-docs
+.. _`project docs`: https://ps-george.github.io/aws-helpers
+.. _`project source code`: https://github.com/ps-george/aws-helpers
 
 Table of Contents
 =================
