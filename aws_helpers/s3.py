@@ -90,8 +90,9 @@ class S3Bucket():
         self.client = self.s3Client.get_bucket(bucket_name)
 
 
-    def upload_file(self, local_file, s3_path):
-        self.client.upload_file(local_file, s3_path)
+    def upload_file(self, local_file, s3_path, mock=False):
+        if not mock:
+	    self.client.upload_file(local_file, s3_path)
 
     def put_file(self, local_file, s3_path, content_type='', content_disposition='', acl='', mock=False):
         """
