@@ -1,0 +1,7 @@
+# Global config for docs
+
+username: ps-george # github username
+project: aws-helpers # name of the project (repo name, PyPi name)
+project_files: aws_helpers # location of project files
+copyright: 2018, George Punter # copyright
+author: George Punter # name of author
