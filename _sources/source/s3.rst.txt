@@ -1,0 +1,7 @@
+s3.py
+======
+
+.. automodule:: aws_helpers.s3
+	:members:
+	:undoc-members:
+	:show-inheritance:    
