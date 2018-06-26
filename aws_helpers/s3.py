@@ -1,84 +1,95 @@
 #!/bin/python3
 
-from boto3.session import Session
 from botocore.exceptions import ClientError
 from boto3.exceptions import S3UploadFailedError
+from aws_helpers.client import Client
 import json
 import os
 
 
-def load_access_keys(access_key_path):
-    # Get AWS credentials
-    with open(os.path.expanduser(access_key_path)) as f:
-        creds = json.load(f)
-
-    ACCESS_KEY=creds.get('access-key')
-    SECRET_KEY=creds.get('secret-access-key')
-    return (ACCESS_KEY, SECRET_KEY)
-
-
-class S3Client():
-    """Creates an s3 session.
-    
-    Raises:
-        ValueError -- [description]
-        ValueError -- [description]
+class S3Client(Client):
+    """Returns an S3Client object which has functions to aid interacting with Amazon s3.
     
     Returns:
-        [type] -- [description]
+        S3Client
     """
-
-    region_name = None
     resource = None
-    access_key_path = None
-
-    def __init__(self, region_name, load_access_keys = lambda: load_access_keys(access_key_path='~/.rootkey.json')):
-        self.region_name = region_name
-        self.load_access_keys = load_access_keys
-        self.resource = self.__get_s3_resource()
 
 
-    def __get_s3_resource(self):
-        """Using *load_access_keys* function to load authentication keys to connect to aws region of the class.
-
-        File at *access_key_path* contains: {'access-key':'ABC', 'secret-access-key':'ABC'}
+    def __init__(self, region_name, replacement_access_key_function = None):
+        """Set properties of the S3Client.
+        
+        Arguments:
+            region_name {str} -- AWS region name e.g. for EU (Ireland): eu-west-1
         
         Keyword Arguments:
-            access_key_path {str} -- Path to access keys. (default: {'~/.rootkey.json'})
-            region_name {str} -- [description] (default: {''})
-        
-        Returns:
-            [Amazon S3 session.resource] -- s3 session.resource is used for future s3 interactions.
+            load_access_keys {function} -- A function which returns a tuple of str's (access-key, secret-access-key) (default: {lambda:load_access_keys(access_key_path='~/.rootkey.json')})
         """
 
-        ACCESS_KEY, SECRET_KEY = self.load_access_keys()
+        super(S3Client, self).__init__(region_name, replacement_access_key_function)
+        self.__set_s3_resource()
 
-        session = Session(
-                aws_access_key_id=ACCESS_KEY,
-                aws_secret_access_key=SECRET_KEY,
-                region_name=self.region_name)
-        return session.resource('s3')
 
-    # GET
+    def __set_s3_resource(self):
+        """Set self.resource to boto3.session.resource."""
+        self.resource = self.session.resource('s3')
+
+
+    def get_s3_resource(self):
+        """Get boto3.session.resource('s3') object.
+        
+        Returns:
+            [type] -- [description]
+        """
+        return self.get_resource('s3')
+
+
     def get_bucket(self, bucket_name=None):
+        """Get an S3 bucket object (boto3.session.resource.Bucket) for the current S3Client.
+        
+        Keyword Arguments:
+            bucket_name {str} -- AWS bucket name (default: {None})
+        
+        Raises:
+            ValueError -- If bucket does not exist or bucket_name not provided.
+        
+        Returns:
+            boto3.session.resource.Bucket -- S3 bucket object.
+        """
+
         if not bucket_name:
             raise ValueError('No bucket_name.')
         if not self.resource.Bucket(bucket_name) in self.resource.buckets.all():
             msg = 'The bucket "{}" does not exist.'.format(bucket_name)
             raise ValueError(msg)
         return self.resource.Bucket(bucket_name)
-    
+
+
     def get_all_buckets(self):
-        """ Function to list all available bucket names."""
-        return [bucket.name for bucket in self.resource.buckets.all()]
+        """Function to return a list of all Bucket objects available with this S3Client."""
+        return self.resource.buckets.all()
+
+
+    def list_all_buckets(self):
+        """ Function to return a list of all available bucket names."""
+        return [bucket.name for bucket in self.get_all_buckets()]
     
-    # CREATE
+
     def create_bucket(self, bucket_name):
+        """Create a bucket using this S3Client in this S3Client's region."""
         return self.resource.create_bucket(Bucket=bucket_name, CreateBucketConfiguration={'LocationConstraint': self.region_name})
     
+
     def delete_bucket(self, bucket_name):
-        bucket = self.resrouce.Bucket(bucket_name)
+        """Delete bucket with *bucket_name* using this S3Client.
+        
+        Arguments:
+            bucket_name {str} -- Name of bucket to delete.
+        """
+
+        bucket = self.get_bucket(bucket_name)
         bucket.delete()
+
 
 class S3Bucket():
     bucket_name = None
@@ -86,12 +97,14 @@ class S3Bucket():
     def __init__(self, bucket_name, bucket_region):
         self.bucket_name = bucket_name
         self.bucket_region = bucket_region
-        self.s3Client = S3Client(region_name = bucket_region)
-        self.client = self.s3Client.get_bucket(bucket_name)
+        self.s3_client = S3Client(region_name = bucket_region)
+        self.client = self.s3_client.get_bucket(bucket_name)
+
 
     def upload_file(self, local_file, s3_path, mock=False):
         if not mock:
             self.client.upload_file(local_file, s3_path)
+
 
     def put_file(self, local_file, s3_path, content_type='', content_disposition='', acl='', mock=False):
         """
