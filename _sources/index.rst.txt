@@ -1,6 +1,6 @@
 aws-helpers
 ===========
-|license| |contributors|
+|license| |versions| |pypi| |contributors|
 
 .. |license| image:: https://img.shields.io/github/license/ps-george/aws-helpers.svg
   :alt: license
@@ -10,8 +10,16 @@ aws-helpers
   :alt: GitHub contributors
   :target: https://github.com/ps-george/aws-helpers/graphs/contributors
 
+.. |versions| image:: https://img.shields.io/pypi/v/aws-helpers.svg
+	:alt: PyPI
+	:target: https://pypi.org/project/aws-helpers/
+
+.. |pypi| image:: https://img.shields.io/pypi/pyversions/aws-helpers.svg
+	:alt: Python Versions
+	:target: https://pypi.org/project/aws-helpers/ 
 
 - `project docs`_
+- `project source code`_
 
 .. _`project docs`: https://ps-george.github.io/aws-helpers
 .. _`project source code`: https://github.com/ps-george/aws-helpers
