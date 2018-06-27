@@ -13,8 +13,8 @@ from shutil import rmtree
 
 from setuptools import find_packages, setup, Command
 
-# parse version from locust/__init__.py
-_version_re = re.compile(r'__version__\s+=\s+(.*)')
+# parse version from aws_helpers/version.py
+_version_re = re.compile(r'__version__\s*=\s*(.*)')
 _version_file = os.path.join(
         os.path.abspath(os.path.dirname(__file__)),
         "aws_helpers",
