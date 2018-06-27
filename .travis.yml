@@ -1,6 +1,7 @@
 sudo: false
 language: python
-cache: pip
+before_script:
+  - pip install -r requirements.txt
 matrix:
   include:
     - python: 3.6
