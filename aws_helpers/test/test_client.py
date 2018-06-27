@@ -18,9 +18,9 @@ class ClientTest(unittest.TestCase):
     client = Client(REGION)
     def test_fail_client(self):
         # Invalid region
-        self.assertRaises(ValueError, lambda: return Client('EU (Ireland)'))
+        bad_region = Client('EU (Ireland)')
         # Invalid keys
-        self.assertRaises(ValueError, lambda: return Client(REGION, lambda: load_access_keys('testfile.json')))
+        bad_keys = Client(REGION, lambda: load_access_keys('testfile.json'))
 
     def test_get_session(self):
         sess = client.get_session()
