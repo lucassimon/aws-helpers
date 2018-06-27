@@ -31,8 +31,5 @@ class ClientTest(unittest.TestCase):
         s3 = client.get_resource('s3')
         
 
-
-
-
-
-    
+if __name__=="__main__":
+    unittest.main()
