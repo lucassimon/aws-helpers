@@ -31,42 +31,7 @@ EMAIL = 'puntersg@gmail.com'
 AUTHOR = 'George Punter'
 REQUIRES_PYTHON = '>=3.5'
 VERSION = version
-
-
-def get_requirements(remove_links=True):
-    """
-    lists the requirements to install.
-    """
-    requirements = []
-    try:
-        with open('requirements.txt') as f:
-            requirements = f.read().splitlines()
-    except Exception as ex:
-        with open('DecoraterBotUtils.egg-info\requires.txt') as f:
-            requirements = f.read().splitlines()
-    if remove_links:
-        for requirement in requirements:
-            # git repository url.
-            if requirement.startswith("git:"):
-                requirements.remove(requirement)
-    return requirements
-
-# What packages are required for this module to be executed?
-REQUIRED = get_requirements()
-print("Requires:\n{}".format(REQUIRED))
-
-def get_links():
-    """
-    gets URL Dependency links.
-    """
-    links_list = get_requirements(remove_links=False)
-    for link in links_list:
-        # git repository url.
-        if not link.startswith("git:"):
-            links_list.remove(link)
-    return links_list
-
-DEPENDENCY_LINKS = get_links()
+REQUIRED = ['boto3']
 
 here = os.path.abspath(os.path.dirname(__file__))
 
@@ -134,7 +99,6 @@ setup(
     url=URL,
     packages=find_packages(exclude=('tests',)),
     install_requires=REQUIRED,
-    dependency_links=DEPENDENCY_LINKS,
     license='MIT',
     classifiers=[
         # Trove classifiers
