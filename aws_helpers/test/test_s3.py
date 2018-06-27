@@ -1,21 +1,10 @@
 from aws_helpers.s3 import S3Client, S3Bucket
 from botocore.exceptions import ClientError
 import unittest
+from aws_helpers.test import TEST_BUCKET_NAME, CD_BUCKET_NAME, REGION
 
-TEST_BUCKET_NAME = 'test.bucket.ps-george'
-CD_BUCKET_NAME = 'test.bucket.ps-george123'
-REGION = 'eu-west-1'
 
-class S3TestCase(unittest.TestCase):
-    """
-    """
-    def setUp(self):
-        pass
-
-    def tearDown(self):
-        pass
-
-class TestS3(S3TestCase):
+class TestS3(unittest.TestCase):
     s3client = S3Client(REGION)
 
     def test_get_bucket(self):
@@ -42,32 +31,33 @@ class TestS3(S3TestCase):
             pass
         self.s3client.get_bucket(CD_BUCKET_NAME).delete()
 
-class TestBucket(S3TestCase):
+
+class TestBucket(unittest.TestCase):
     bucket = S3Bucket(TEST_BUCKET_NAME, REGION)
 
     def test_upload_file(self):
-        self.bucket.upload_file('testfile.txt', 'permtestfile.txt')
-        self.bucket.upload_file('testfile.txt', 'testfile.txt')
-        self.assertEqual('testfile.txt', list(self.bucket.get_files('testfile.txt'))[0].key)
+        self.bucket.upload_file('testfile.json', 'permtestfile.json')
+        self.bucket.upload_file('testfile.json', 'testfile.json')
+        self.assertEqual('testfile.json', list(self.bucket.get_files('testfile.json'))[0].key)
     
     def test_put_file(self):
-        self.bucket.delete_files('testfile2.txt')
-        self.bucket.put_file('testfile.txt', 'testfile2.txt', mock=True)
-        self.assertEqual(None, None if not list(self.bucket.get_files('testfile2.txt')) else 'some')
-        self.bucket.put_file('testfile.txt', 'testfile2.txt')
-        self.assertEqual('testfile2.txt', list(self.bucket.get_files('testfile2.txt'))[0].key)
+        self.bucket.delete_files('testfile2.json')
+        self.bucket.put_file('testfile.json', 'testfile2.json', mock=True)
+        self.assertEqual(None, None if not list(self.bucket.get_files('testfile2.json')) else 'some')
+        self.bucket.put_file('testfile.json', 'testfile2.json')
+        self.assertEqual('testfile2.json', list(self.bucket.get_files('testfile2.json'))[0].key)
     
     def test_delete_files(self):
         self.bucket.delete_files('testfile', mock=True)
-        self.assertEqual('some', None if not list(self.bucket.get_files('testfile.txt')) else 'some')
-        self.assertEqual('some', None if not list(self.bucket.get_files('testfile2.txt')) else 'some')
+        self.assertEqual('some', None if not list(self.bucket.get_files('testfile.json')) else 'some')
+        self.assertEqual('some', None if not list(self.bucket.get_files('testfile2.json')) else 'some')
         self.bucket.delete_files('testfile')
-        self.assertEqual(None, None if not list(self.bucket.get_files('testfile.txt')) else 'some')
-        self.assertEqual(None, None if not list(self.bucket.get_files('testfile2.txt')) else 'some')
+        self.assertEqual(None, None if not list(self.bucket.get_files('testfile.json')) else 'some')
+        self.assertEqual(None, None if not list(self.bucket.get_files('testfile2.json')) else 'some')
 
     def test_get_file(self):
-        self.assertEqual('permtestfile.txt', list(self.bucket.get_files('permtestfile.txt'))[0].key)
-        self.assertEqual(None, None if not list(self.bucket.get_files('testfile.txt')) else 'some')
+        self.assertEqual('permtestfile.json', list(self.bucket.get_files('permtestfile.json'))[0].key)
+        self.assertEqual(None, None if not list(self.bucket.get_files('testfile.json')) else 'some')
     
     def test_upload_direcory(self):
         self.bucket.upload_directory('./', 'test/')
