@@ -16,4 +16,4 @@ after_success:
 - codecov -e TOXENV
 before_install:
 - openssl aes-256-cbc -K $encrypted_057df2ea223e_key -iv $encrypted_057df2ea223e_iv
-  -in .rootkey.json.enc -out /root/travis/.rootkey.json -d
+  -in .rootkey.json.enc -out /home/travis/.rootkey.json -d
