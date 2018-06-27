@@ -7,7 +7,7 @@ from aws_helpers.test import REGION
 
 class AccessKeysTest(unittest.TestCase):
     def test_load_access_keys(self):
-        access_key, secret_key = load_access_keys(access_key_path='testfiles/testkey.json')
+        access_key, secret_key = load_access_keys(access_key_path='testfiles/.testkey.json')
         self.assertEqual('ABC',access_key)
         self.assertEqual('DEF',secret_key)
 
@@ -19,7 +19,7 @@ class ClientTest(unittest.TestCase):
         # Invalid region
         bad_region = Client('EU (Ireland)')
         # Invalid keys
-        bad_keys = Client(REGION, lambda: load_access_keys('testfiles/testkey.json'))
+        bad_keys = Client(REGION, lambda: load_access_keys('testfiles/.testkey.json'))
 
     def test_get_session(self):
         client = Client(REGION)
