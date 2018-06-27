@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>aws_helpers.s3 &mdash; aws-helpers 0.5beta documentation</title>
+  <title>aws_helpers.s3 &mdash; aws-helpers 0.6beta documentation</title>
   
 
   
@@ -56,7 +56,7 @@
             
             
               <div class="version">
-                0.5
+                0.6
               </div>
             
           
@@ -298,10 +298,10 @@
                     <span class="k">continue</span>
 
                 <span class="n">s3_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">target_directory</span><span class="p">,</span> <span class="n">relative_path</span><span class="p">)</span>
-                <span class="nb">print</span> <span class="p">(</span><span class="s1">&#39;Uploading &quot;</span><span class="si">{}</span><span class="s1">&quot; to &quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">relative_path</span><span class="p">,</span> <span class="n">s3_path</span><span class="p">))</span>
+                <span class="nb">print</span> <span class="p">(</span><span class="s1">&#39;Uploading &quot;</span><span class="si">{}</span><span class="s1">&quot; to &quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">local_path</span><span class="p">,</span> <span class="n">s3_path</span><span class="p">))</span>
 
                 <span class="c1"># Upload a new file</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">upload_file</span><span class="p">(</span><span class="n">relative_path</span><span class="p">,</span> <span class="n">s3_path</span><span class="p">)</span> 
+                <span class="bp">self</span><span class="o">.</span><span class="n">upload_file</span><span class="p">(</span><span class="n">local_path</span><span class="p">,</span> <span class="n">s3_path</span><span class="p">)</span> 
         <span class="k">return</span> <span class="kc">True</span></div>
 
 
@@ -353,7 +353,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.5beta',
+            VERSION:'0.6beta',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
