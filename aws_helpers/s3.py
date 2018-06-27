@@ -151,10 +151,10 @@ class S3Bucket():
                     continue
 
                 s3_path = os.path.join(target_directory, relative_path)
-                print ('Uploading "{}" to "{}"'.format(relative_path, s3_path))
+                print ('Uploading "{}" to "{}"'.format(local_path, s3_path))
 
                 # Upload a new file
-                self.upload_file(relative_path, s3_path) 
+                self.upload_file(local_path, s3_path) 
         return True
 
 

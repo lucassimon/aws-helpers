@@ -35,32 +35,49 @@ class TestS3(unittest.TestCase):
 class TestBucket(unittest.TestCase):
     bucket = S3Bucket(TEST_BUCKET_NAME, REGION)
 
+
     def test_upload_file(self):
-        self.bucket.upload_file('testfile.json', 'permtestfile.json')
-        self.bucket.upload_file('testfile.json', 'testfile.json')
-        self.assertEqual('testfile.json', list(self.bucket.get_files('testfile.json'))[0].key)
+        self.bucket.upload_file('testfiles/.testkey.json', 'permtestkey.json')
+        self.bucket.upload_file('testfiles/.testkey.json', '.testkey.json')
+        self.assertEqual('test/.testkey.json', list(self.bucket.get_files('test/.testkey.json'))[0].key)
     
+
     def test_put_file(self):
-        self.bucket.delete_files('testfile2.json')
-        self.bucket.put_file('testfile.json', 'testfile2.json', mock=True)
-        self.assertEqual(None, None if not list(self.bucket.get_files('testfile2.json')) else 'some')
-        self.bucket.put_file('testfile.json', 'testfile2.json')
-        self.assertEqual('testfile2.json', list(self.bucket.get_files('testfile2.json'))[0].key)
+        self.bucket.delete_files('.testkey2.json')
+        # Pretend to put then check it's not there
+        self.bucket.put_file('testfiles/.testkey.json', '.testkey2.json', mock=True)
+        self.assertEqual(None, None if not list(self.bucket.get_files('.testkey2.json')) else 'some')
+        # Actually put it and check it is there
+        self.bucket.put_file('testfiles/.testkey.json', '.testkey2.json')
+        self.assertEqual('.testkey2.json', list(self.bucket.get_files('.testkey2.json'))[0].key)
     
+
     def test_delete_files(self):
-        self.bucket.delete_files('testfile', mock=True)
-        self.assertEqual('some', None if not list(self.bucket.get_files('testfile.json')) else 'some')
-        self.assertEqual('some', None if not list(self.bucket.get_files('testfile2.json')) else 'some')
-        self.bucket.delete_files('testfile')
-        self.assertEqual(None, None if not list(self.bucket.get_files('testfile.json')) else 'some')
-        self.assertEqual(None, None if not list(self.bucket.get_files('testfile2.json')) else 'some')
+        # Put in case it isn't there already but it should bt
+        self.bucket.put_file('testfiles/.testkey.json', '.testkey2.json')
+        self.bucket.upload_file('testfiles/.testkey.json', '.testkey.json')
+
+        # Pretend to delete .testkey.json
+        self.bucket.delete_files('.testkey.json', mock=True)
+
+        # Check that .testkey.json and testkey2.json still there
+        self.assertEqual('some', None if not list(self.bucket.get_files('.testkey.json')) else 'some')
+        self.assertEqual('some', None if not list(self.bucket.get_files('.testkey2.json')) else 'some')
+
+        # Delete both files
+        self.bucket.delete_files('.testkey')
+        # Check that files are gone
+        self.assertEqual(None, None if not list(self.bucket.get_files('.testkey.json')) else 'some')
+        self.assertEqual(None, None if not list(self.bucket.get_files('.testkey2.json')) else 'some')
+
 
     def test_get_file(self):
-        self.assertEqual('permtestfile.json', list(self.bucket.get_files('permtestfile.json'))[0].key)
-        self.assertEqual(None, None if not list(self.bucket.get_files('testfile.json')) else 'some')
+        self.assertEqual('permtestkey.json', list(self.bucket.get_files('permtestkey.json'))[0].key)
+        self.assertEqual(None, None if not list(self.bucket.get_files('.testkey.json')) else 'some')
     
+
     def test_upload_direcory(self):
-        self.bucket.upload_directory('./', 'test/')
+        self.bucket.upload_directory('testfiles/', 'test/')
         self.assertEqual('some', None if not list(self.bucket.get_files('test/')) else 'some')
 
     
