@@ -80,7 +80,7 @@ class Client():
         """Get AWS resource.
         
         Arguments:
-            resource_type {str} -- AWS resource type, e.g. s3
+            resource_type {str} -- AWS resource type.
         
         Returns:
             boto3.session.resource -- Returns resource object of specified type.

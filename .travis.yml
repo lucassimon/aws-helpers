@@ -1,0 +1,17 @@
+sudo: false
+language: python
+matrix:
+  include:
+  - python: 3.6
+    env: TOXENV=py36
+  - python: 3.5
+    env: TOXENV=py35
+install:
+- pip install tox codecov
+script:
+- tox
+after_success:
+- codecov -e TOXENV
+before_install:
+- openssl aes-256-cbc -K $encrypted_057df2ea223e_key -iv $encrypted_057df2ea223e_iv
+  -in .rootkey.json.enc -out /home/travis/.rootkey.json -d
