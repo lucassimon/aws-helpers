@@ -29,7 +29,7 @@ DESCRIPTION = 'Some helpers for working with boto3.'
 URL = 'https://github.com/ps-george/aws_helpers'
 EMAIL = 'puntersg@gmail.com'
 AUTHOR = 'George Punter'
-REQUIRES_PYTHON = '>=3.5'
+REQUIRES_PYTHON = '>=2.7'
 VERSION = version
 REQUIRED = ['boto3']
 
@@ -105,6 +105,8 @@ setup(
         # Full list: https://pypi.python.org/pypi?%3Aaction=list_classifiers
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python',
+        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: Implementation :: CPython',
