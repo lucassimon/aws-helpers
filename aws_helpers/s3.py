@@ -39,7 +39,7 @@ class S3Client(Client):
         """Get boto3.session.resource('s3') object.
 
         Returns:
-            [type] -- [description]
+            boto3.session.resource('s3) -- boto3 S3 resource.
         """
         return self.get_resource('s3')
 
@@ -102,6 +102,17 @@ class S3Bucket():
 
 
     def upload_file(self, local_file, s3_path, mock=False):
+        """Upload file at *local_file* path to *s3_path"
+        
+        Arguments:
+            local_file {str} -- Path to local file.
+            s3_path {str} -- Path on S3.
+        
+        Keyword Arguments:
+            mock {bool} -- Print what would have happened but don't upload anything. (default: {False})
+        """
+
+        print("Uploading {0} to {1}".format(local_file, s3_path))
         if not mock:
             self.client.upload_file(local_file, s3_path)
 
@@ -110,12 +121,12 @@ class S3Bucket():
         """
 
         Keyword Arguments:
-            local_file {str} -- [description]
-            s3_path {str} -- [description]
-            content_type {str} -- [description] (default: {''})
-            content_disposition {str} -- [description] (default: {''})
-            acl {str} -- [description] (default: {''})
-            mock {bool} -- [description] (default: {False})
+            local_file {str} -- Path to local file.
+            s3_path {str} -- Path to save file to on S3 bucket.
+            content_type {str} -- Mimetype e.g. text/html or stylesheet (default: {''})
+            content_disposition {str} -- e.g. inline, attachment, form-data (default: {''})
+            acl {str} -- ACL rules for content access e.g. 'public-read' (default: {''})
+            mock {bool} -- Print what would have happened but don't put anything. (default: {False})
         """
         print ('Uploading "{}" to "{}"'.format(local_file, s3_path))
         if not mock:
@@ -125,16 +136,16 @@ class S3Bucket():
         return True
 
 
-    def upload_directory(self, local_directory='', target_directory='', ignore_dirs=[], content_type='', content_disposition='', acl=''):
+    def upload_directory(self, local_directory, target_directory, ignore_dirs=[], content_type='', content_disposition='', acl=''):
         """Upload all files in *local_directory* to *target_directory* on bucket.
 
         Keyword Arguments:
-            local_directory {str} -- [description] (default: {''})
-            target_directory {str} -- [description] (default: {''})
-            ignore_dirs {list} -- [description] (default: {[]})
-            content_type {str} -- [description] (default: {''})
-            content_disposition {str} -- [description] (default: {''})
-            acl {str} -- [description] (default: {''})
+            local_directory {str} -- Path to local directory.
+            target_directory {str} -- Path to target directory on S3 to upload into. 
+            ignore_dirs {list} -- Ignore local directories starting with these strings. (default: {[]})
+            content_type {str} -- Mimetype e.g. text/html or stylesheet (default: {''})
+            content_disposition {str} -- e.g. inline, attachment, form-data (default: {''})
+            acl {str} -- ACL rules for content access e.g. 'public-read' (default: {''})
         """
         print('Uploading to bucket: {}'.format(self.bucket_name))
         for root, dirs, files in os.walk(local_directory):
@@ -159,16 +170,44 @@ class S3Bucket():
 
 
     def get_files(self, prefix='', delimiter=''):
+        """Get AWS S3 files.
+        
+        Keyword Arguments:
+            prefix {str} -- All files with this prefix. (default: {''})
+            delimiter {str} -- Do not include files with this prefix. (default: {''})
+        
+        Returns:
+            S3 object iterator -- Object iterator (similar to a list, can convert using list(get_files())) containing all the files that matched.
+        """
+
         return self.client.objects.filter(Prefix=prefix, Delimiter=delimiter)
 
 
     def delete_files(self, prefix='', delimiter='', mock=False):
+        """Delete all files on S3 matching the prefix, ignoring those that match the delimiter.
+        
+        Keyword Arguments:
+            prefix {str} -- String to match. (default: {''})
+            delimiter {str} -- Files to not include. (default: {''})
+            mock {bool} -- Print what would have happened but don't delete anything. (default: {False})
+        """
+
         for s3_file in self.get_files(prefix, delimiter):
             print('Deleting {}'.format(s3_file.key))
             if not mock:
                 s3_file.delete()
 
 
-    def set_s3_acl(acl='public-read', prefix='', delimiter=''):
-        for s3_file in self.get_files(prefix, delimiter):
-            s3_file.Acl().put(ACL=acl)
+    def set_s3_acl(acl='public-read', prefix='', delimiter='', mock=False):
+        """Set ACL status for files matching *prefix* and not containing *delimiter*.
+        
+        Keyword Arguments:
+            acl {str} -- ACL rules for content access e.g. 'public-read' (default: {'public-read'})
+            prefix {str} -- String to match. (default: {''})
+            delimiter {str} -- Files to not include. (default: {''})
+        """
+
+        print("Setting ACL status for {0} to {1}".format(prefix, alc))
+        if not mock:
+            for s3_file in self.get_files(prefix, delimiter):
+                s3_file.Acl().put(ACL=acl)
